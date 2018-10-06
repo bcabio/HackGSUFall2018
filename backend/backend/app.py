@@ -103,4 +103,15 @@ def get_transaction_list():
 
 @app.route('/transaction', methods=['POST'])
 def add_transaction():
-    request.json
+    data = request.json
+    db = get_db()
+    cur = db.execute("""INSERT INTO transactions (customer_name, purchase_time)
+                        VALUES (?, 'now')""", (data['customer_name'],))
+    transaction_id = cur.lastrowid
+    purchased_items = [(transaction_id, val['name'], val['price'])
+                       for val in data['purchased_items']]
+    db.executemany("""INSERT INTO purchased_items (transaction_id, name, price)
+                      VALUES (?, ?, ?)""", purchased_items)
+    db.commit()
+
+    return jsonify({'id': transaction_id})
