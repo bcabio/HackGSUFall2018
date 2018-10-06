@@ -1,20 +1,48 @@
 import * as React from 'react';
-import './App.css';
 
-import logo from './logo.svg';
+import * as moment from 'moment';
+import { Grid, Nav, Navbar, NavItem } from 'react-bootstrap';
+
+import TransactionList from './components/TransactionList';
 
 class App extends React.Component {
   public render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </div>
+      <React.Fragment>
+        <Navbar>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <a href="#home">React-Bootstrap</a>
+            </Navbar.Brand>
+          </Navbar.Header>
+          <Nav>
+            <NavItem eventKey={1} href="#">
+              Link
+            </NavItem>
+          </Nav>
+        </Navbar>
+        <Grid>
+          <TransactionList
+            transactions={[
+              {
+                items: [{ name: 'old apple', price: 500 }],
+                time: moment().subtract(7, 'days'),
+                user: 'flaviu'
+              },
+              {
+                items: [{ name: 'old apple', price: 500 }],
+                time: moment().subtract(7, 'days'),
+                user: 'flaviu'
+              },
+              {
+                items: [{ name: 'old apple', price: 500 }],
+                time: moment().subtract(7, 'days'),
+                user: 'flaviu'
+              }
+            ]}
+          />
+        </Grid>
+      </React.Fragment>
     );
   }
 }

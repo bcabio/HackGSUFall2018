@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "3",
+    "moment": "^2.22.2",
     "react": "^16.5.2",
+    "react-bootstrap": "^0.32.4",
     "react-dom": "^16.5.2",
     "react-scripts-ts": "3.1.0"
   },
@@ -15,7 +18,7 @@
     "eject": "react-scripts-ts eject"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,json,css}": [
+    "src/**/*.{js,jsx,json,css,ts,tsx}": [
       "prettier --single-quote --write",
       "git add"
     ]
@@ -24,6 +27,7 @@
     "@types/jest": "^23.3.3",
     "@types/node": "^10.11.4",
     "@types/react": "^16.4.15",
+    "@types/react-bootstrap": "^0.32.14",
     "@types/react-dom": "^16.0.8",
     "husky": "^1.1.1",
     "lint-staged": "^7.3.0",
