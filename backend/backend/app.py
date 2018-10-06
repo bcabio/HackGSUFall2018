@@ -3,6 +3,7 @@ import os
 from typing import List, Dict
 
 import attr
+import pytz
 from flask import Flask, request, g, jsonify
 import dateutil.parser
 import sqlite3
@@ -106,7 +107,8 @@ def add_transaction():
     data = request.json
     db = get_db()
     cur = db.execute("""INSERT INTO transactions (customer_name, purchase_time)
-                        VALUES (?, 'now')""", (data['customer_name'],))
+                        VALUES (?, ?)""", (
+        data['customer_name'], pytz.utc.localize(datetime.utcnow()).isoformat()))
     transaction_id = cur.lastrowid
     purchased_items = [(transaction_id, val['name'], val['price'])
                        for val in data['purchased_items']]
