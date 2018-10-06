@@ -1,13 +1,16 @@
 from datetime import datetime
 import os
-import attr
+from typing import List, Dict
 
+import attr
 from flask import Flask, request, g, jsonify
 import dateutil.parser
 import sqlite3
-from typing import List, Dict
+
+from backend.json_encoding import MyJSONEncoder
 
 app = Flask(__name__)
+app.json_encoder = MyJSONEncoder
 app.config.from_object(__name__)  # load config from this file, flaskr.py
 
 # Load default config and override config from an environment variable
@@ -91,6 +94,9 @@ def get_transaction_list():
                 price=trans_item[2],
                 name=trans_item[3]
             ))
+
+    transactions: List[Transaction] = sorted(transactions.values(),
+                                             key=lambda trans: trans.purchase_time)
 
     return jsonify(transactions)
 
