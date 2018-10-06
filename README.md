@@ -7,6 +7,7 @@
 ## Database
 
 - Transaction list (transaction includes items & username)
+- sql or nosql isn't particularly important -- it's just a list of (names, \[items purchased\])
 
 ## Admin dashboard
 
