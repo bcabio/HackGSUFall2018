@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 import attr
 
-from flask import Flask, request, g
+from flask import Flask, request, g, jsonify
 import dateutil.parser
 import sqlite3
 from typing import List, Dict
@@ -59,6 +59,7 @@ def initdb_command():
 
 @attr.s(frozen=True, auto_attribs=True)
 class PurchasedItem:
+    id: int
     name: str
     price: float
 
@@ -74,20 +75,24 @@ class Transaction:
 @app.route('/transactions')
 def get_transaction_list():
     db = get_db()
-    cur = db.execute('''
-        SELECT
-            transactions.id,
-            transactions.customer_name,
-            transactions.purchase_time
-        FROM transactions;''')
+    cur = db.execute('SELECT * FROM transactions;')
     transactions: Dict[int, Transaction] = {}
     for transaction in cur.fetchall():
-        transactions[transaction.id] = Transaction(
-            id=transaction.id,
-            customer_name=transaction.customer_name,
-            purchase_time=dateutil.parser.parse(transaction.purchase_time))
+        transactions[transaction[0]] = Transaction(
+            id=transaction[0],
+            customer_name=transaction[1],
+            purchase_time=dateutil.parser.parse(transaction[2]))
 
-    for     
+    cur = db.execute('SELECT * FROM purchased_items;')
+    for trans_item in cur.fetchall():
+        transactions[trans_item[1]].purchased_items.append(
+            PurchasedItem(
+                id=trans_item[0],
+                price=trans_item[2],
+                name=trans_item[3]
+            ))
+
+    return jsonify(transactions)
 
 
 @app.route('/transaction', methods=['POST'])
