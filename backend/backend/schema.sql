@@ -17,3 +17,5 @@ CREATE TABLE prices (
   item_id TEXT UNIQUE PRIMARY KEY NOT NULL,
   price REAL NOT NULL
 );
+INSERT INTO prices (item_id, price) VALUES (123, 24);
+INSERT INTO prices (item_id, price) VALUES (12345678, 532);
