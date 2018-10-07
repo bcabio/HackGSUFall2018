@@ -1,34 +1,12 @@
 import * as React from 'react';
 
-import * as moment from 'moment';
 import { Grid, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Home from './components/Home';
+import subscribeRest from './components/subscribeRest';
 import TransactionList from './components/TransactionList';
-
-const ExampleTransactionList = () => (
-  <TransactionList
-    transactions={[
-      {
-        items: [{ name: 'old apple', price: 500 }],
-        time: moment().subtract(7, 'days'),
-        user: 'flaviu'
-      },
-      {
-        items: [{ name: 'old apple', price: 500 }],
-        time: moment().subtract(7, 'days'),
-        user: 'flaviu'
-      },
-      {
-        items: [{ name: 'old apple', price: 500 }],
-        time: moment().subtract(7, 'days'),
-        user: 'flaviu'
-      }
-    ]}
-  />
-);
 
 class App extends React.Component {
   public render() {
@@ -57,7 +35,7 @@ class App extends React.Component {
             <Route
               exact
               path="/transactions"
-              component={ExampleTransactionList}
+              component={subscribeRest(TransactionList, '/api/transactions')}
             />
             {/* <Route exact path="/inventory" component={InventoryList} /> */}
           </Grid>

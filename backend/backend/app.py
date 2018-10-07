@@ -81,7 +81,7 @@ class Transaction:
     purchased_items: List[CatalogEntry] = attr.Factory(list)
 
 
-@app.route('/transactions', methods=['GET'])
+@app.route('/api/transactions', methods=['GET'])
 def get_transaction_list():
     db = get_db()
     cur = db.execute('SELECT * FROM transactions;')
@@ -109,7 +109,7 @@ def get_transaction_list():
     return jsonify(transactions)
 
 
-@app.route('/transaction', methods=['POST'])
+@app.route('/api/transaction', methods=['POST'])
 def add_transaction():
     data = request.json
     db = get_db()
@@ -160,7 +160,7 @@ def get_catalog() -> Dict[str, CatalogEntry]:
         ) for item in content}
 
 
-@app.route('/catalog', methods=['GET'])
+@app.route('/api/catalog', methods=['GET'])
 def get_catalog_req():
     return jsonify(get_catalog())
 
@@ -178,7 +178,7 @@ def default_item(other_values):
     return result
 
 
-@app.route('/catalog', methods=['PUT'])
+@app.route('/api/catalog', methods=['PUT'])
 def add_item():
     """Takes a JSON {name: string, price: float, id: string, description: string}"""
     data = request.json
@@ -201,7 +201,7 @@ def add_item():
     return res.text, res.status_code, {'Content-Type': 'application/json'}
 
 
-@app.route('/catalog/<item_id>', methods=['DELETE'])
+@app.route('/api/catalog/<item_id>', methods=['DELETE'])
 def delete_item(item_id):
     """Takes a string id in the URL"""
     item_url = '{}/catalog/items/{}'.format(GATEWAY_URL, item_id)

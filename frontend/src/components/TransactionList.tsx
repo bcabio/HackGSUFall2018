@@ -1,15 +1,16 @@
-import { Moment } from 'moment';
+import * as lodash from 'lodash';
+import * as moment from 'moment';
 import * as React from 'react';
 import { Col, Label, Panel, Row, Table } from 'react-bootstrap';
 
 export interface TransactionListProps {
-  transactions: Transaction[];
+  input: { [v: string]: Transaction };
 }
 
 export interface Transaction {
-  time: Moment;
-  user: string;
-  items: PurchasedItem[];
+  purchase_time: string;
+  customer_name: string;
+  purchased_items: PurchasedItem[];
 }
 
 export interface PurchasedItem {
@@ -17,23 +18,27 @@ export interface PurchasedItem {
   price: number;
 }
 
-const TransactionList: React.SFC<TransactionListProps> = ({ transactions }) => {
+const TransactionList: React.SFC<TransactionListProps> = ({ input }) => {
+  if (input == null) {
+    return <span>loading...</span>;
+  }
+
   return (
     <Row>
       <Col>
-        {transactions.map(transaction => (
+        {lodash.values(input).map(transaction => (
           <Panel>
             <Panel.Heading>
-              {transaction.user}
-              <Label>{transaction.time.fromNow()}</Label>
+              {transaction.customer_name}
+              <Label>{moment(transaction.purchase_time).fromNow()}</Label>
             </Panel.Heading>
             <Panel.Body>
               <Table responsive condensed>
                 <tbody>
-                  {transaction.items.map(item => (
+                  {transaction.purchased_items.map(item => (
                     <tr>
                       <td>{item.name}</td>
-                      <td>{item.price}</td>
+                      <td>${item.price.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
