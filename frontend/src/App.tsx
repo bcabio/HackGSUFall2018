@@ -13,7 +13,12 @@ import TransactionList from './components/TransactionList';
 const AppNav = () => (
   <Navbar>
     <Navbar.Header>
-      <Navbar.Brand>Apple Store</Navbar.Brand>
+      <Navbar.Brand>
+        <span style={{ fontFamily: 'DejaVu Sans' }}>
+          <span style={{ fontWeight: 300 }}>MARK</span>
+          <span style={{ fontWeight: 600 }}>IT</span>
+        </span>
+      </Navbar.Brand>
     </Navbar.Header>
     <Nav>
       <LinkContainer to="/transactions">
