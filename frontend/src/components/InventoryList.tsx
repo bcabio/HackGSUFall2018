@@ -14,10 +14,10 @@ const InventoryList: React.SFC<InventoryListProps> = props => {
 
   return (
     <React.Fragment>
-      <Row>
+      <Row style={{ marginBottom: '1em' }}>
         <Col>
           <ButtonToolbar>
-            <Button bsStyle="primary">Add items</Button>
+            <Button bsStyle="primary">Add item</Button>
           </ButtonToolbar>
         </Col>
       </Row>

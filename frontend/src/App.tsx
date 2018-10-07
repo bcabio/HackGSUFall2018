@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Grid, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import Cart from './components/Cart';
 import Home from './components/Home';
@@ -10,33 +10,35 @@ import InventoryList from './components/InventoryList';
 import subscribeRest from './components/subscribeRest';
 import TransactionList from './components/TransactionList';
 
+const AppNav = () => (
+  <Navbar>
+    <Navbar.Header>
+      <Navbar.Brand>Apple Store</Navbar.Brand>
+    </Navbar.Header>
+    <Nav>
+      <LinkContainer to="/transactions">
+        <NavItem eventKey={1} href="/transactions">
+          Transactions
+        </NavItem>
+      </LinkContainer>
+      <LinkContainer to="/inventory">
+        <NavItem eventKey={1} href="/inventory">
+          Inventory
+        </NavItem>
+      </LinkContainer>
+    </Nav>
+  </Navbar>
+);
+
 class App extends React.Component {
   public render() {
     return (
       <Router>
         <React.Fragment>
-          <Navbar>
-            <Navbar.Header>
-              <Navbar.Brand>Apple Store</Navbar.Brand>
-            </Navbar.Header>
-            <Nav>
-              <LinkContainer to="/transactions">
-                <NavItem eventKey={1} href="/transactions">
-                  Transactions
-                </NavItem>
-              </LinkContainer>
-              <LinkContainer to="/inventory">
-                <NavItem eventKey={1} href="/inventory">
-                  Inventory
-                </NavItem>
-              </LinkContainer>
-              <LinkContainer to="/cart">
-                <NavItem eventKey={1} href="/cart">
-                  Cart
-                </NavItem>
-              </LinkContainer>
-            </Nav>
-          </Navbar>
+          <Switch>
+            <Route exact path="/cart" component={React.Fragment} />
+            <Route path="/" component={AppNav} />
+          </Switch>
           <Grid>
             <Route exact path="/" component={Home} />
             <Route
@@ -49,7 +51,11 @@ class App extends React.Component {
               path="/inventory"
               component={subscribeRest(InventoryList, '/api/catalog')}
             />
-            <Route exact path="/cart" component={Cart} />
+            <Route
+              exact
+              path="/cart"
+              component={subscribeRest(Cart, '/api/catalog')}
+            />
           </Grid>
         </React.Fragment>
       </Router>
