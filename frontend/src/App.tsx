@@ -4,6 +4,7 @@ import { Grid, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
+import AddItemForm from './components/AddItemForm';
 import Cart from './components/Cart';
 import Home from './components/Home';
 import InventoryList from './components/InventoryList';
@@ -61,6 +62,7 @@ class App extends React.Component {
               path="/cart"
               component={subscribeRest(Cart, '/api/catalog')}
             />
+            <Route exact path="/inventory/add_item" component={AddItemForm} />
           </Grid>
         </React.Fragment>
       </Router>
