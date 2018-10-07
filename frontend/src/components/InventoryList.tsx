@@ -15,6 +15,12 @@ export interface Item {
   available_count: number;
 }
 
+function deleteItem(id: number) {
+  const req = new XMLHttpRequest();
+  req.open('DELETE', '/api/catalog/' + id);
+  req.send();
+}
+
 const InventoryList: React.SFC<InventoryListProps> = props => {
   if (props.input == null) {
     return <span>loading...</span>;
@@ -25,7 +31,9 @@ const InventoryList: React.SFC<InventoryListProps> = props => {
       <Row>
         <Col>
           <ButtonToolbar>
-            <Button bsStyle="primary">Add items</Button>
+            <Button bsStyle="primary" href="/inventory/add_item">
+              Add items
+            </Button>
           </ButtonToolbar>
         </Col>
       </Row>
@@ -54,7 +62,15 @@ const InventoryList: React.SFC<InventoryListProps> = props => {
                     <td>${item.price.toFixed(2)}</td>
                     <td>{item.available_count}</td>
                     <td>
-                      <Button bsStyle="primary">Remove</Button>
+                      <Button
+                        bsStyle="primary"
+                        onClick={
+                          // tslint:disable-next-line jsx-no-lambda
+                          () => deleteItem(item.id)
+                        }
+                      >
+                        Remove
+                      </Button>
                     </td>
                   </tr>
                 ))}

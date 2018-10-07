@@ -184,6 +184,7 @@ def default_item(other_values):
 def add_item():
     """Takes a JSON {name: string, price: float, id: string, description: string}"""
     data = request.json
+
     description = data['description']
     name = data['name']
     price = data['price']
