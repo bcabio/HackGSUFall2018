@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Alert,
   Col,
   ControlLabel,
   Form,
@@ -19,12 +20,13 @@ export interface CartProps {
 interface CartState {
   userId: string;
   currentCart: string[];
+  shouldThank: boolean;
 }
 
 class Cart extends React.Component<CartProps, CartState> {
   constructor(props: CartProps) {
     super(props);
-    this.state = { userId: 'guest', currentCart: [] };
+    this.state = { userId: 'guest', currentCart: [], shouldThank: false };
   }
 
   public render() {
@@ -33,6 +35,11 @@ class Cart extends React.Component<CartProps, CartState> {
     return (
       <React.Fragment>
         <NfcReader onNfcRead={this.onNfcRead} />
+        {this.state.shouldThank ? (
+          <Alert bsStyle="success">
+            <h4>Thank your for your purchase!</h4>
+          </Alert>
+        ) : null}
         <Form horizontal>
           <FormGroup controlId="user-name">
             <Col componentClass={ControlLabel} sm={2}>
@@ -84,11 +91,33 @@ class Cart extends React.Component<CartProps, CartState> {
     );
   }
 
-  private onNfcRead = (messages: NfcScan): void => {
-    const newId = messages.records[0].data;
-    this.setState({
-      currentCart: [newId == null ? 'a' : newId, ...this.state.currentCart]
+  private checkout() {
+    return fetch('/api/transaction', {
+      body: JSON.stringify({
+        customer_name: this.state.userId,
+        purchased_items: this.state.currentCart
+      }),
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      method: 'POST'
+    }).then(response => {
+      if (response.ok) {
+        this.setState({ currentCart: [] });
+      }
     });
+  }
+
+  private onNfcRead = (messages: NfcScan): void => {
+    let newId = messages.records[0].data || 'a';
+    newId = newId.replace(/[:./]/g, '');
+    if (newId === 'httpsubmit') {
+      this.checkout();
+    } else {
+      this.setState({
+        currentCart: [newId, ...this.state.currentCart]
+      });
+    }
   };
   private onNameChange = (event: React.FormEvent<FormControl>): void => {
     this.setState({ userId: (event.target as HTMLInputElement).value });

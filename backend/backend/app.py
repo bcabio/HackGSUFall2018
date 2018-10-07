@@ -158,7 +158,8 @@ def get_catalog() -> Dict[str, CatalogEntry]:
             description=item['longDescription']['value'],
             is_active=item['status'] == 'ACTIVE',
             price=price_table[item['itemId']['itemCode']][0] if item['itemId']['itemCode'] in price_table else -99,
-            available_count=price_table[item['itemId']['itemCode']][1] if item['itemId']['itemCode'] in price_table else -99,
+            available_count=price_table[item['itemId']['itemCode']][1] if item['itemId'][
+                                                                              'itemCode'] in price_table else -99,
         ) for item in content}
 
 
@@ -190,16 +191,16 @@ def add_item():
     price = data['price']
     item_id = data['id']
     available_count = data['available_count']
-    db = get_db()
     res = request_session().put(
         GATEWAY_URL + '/catalog/items', data=json.dumps({"items": [default_item({
             "longDescription": {"values": [{"locale": "en-US", "value": description}]},
             "shortDescription": {"values": [{"locale": "en-US", "value": name}]},
             "itemId": {"itemCode": item_id},
         })]}))
-    db.execute("""INSERT INTO aux_data (item_id, price, available_count)
-                  VALUES (?, ?, ?)""", (item_id, price, available_count))
-    if res.status_code == 200:
+    if 300 > res.status_code >= 200:
+        db = get_db()
+        db.execute("""INSERT INTO aux_data (item_id, price, available_count)
+                      VALUES (?, ?, ?)""", (item_id, price, available_count))
         db.commit()
 
     return res.text, res.status_code, {'Content-Type': 'application/json'}
