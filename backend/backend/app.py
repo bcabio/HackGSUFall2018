@@ -157,8 +157,8 @@ def get_catalog() -> Dict[str, CatalogEntry]:
             name=item['shortDescription']['value'],
             description=item['longDescription']['value'],
             is_active=item['status'] == 'ACTIVE',
-            price=price_table[item['itemId']['itemCode']][0],
-            available_count=price_table[item['itemId']['itemCode']][1]
+            price=price_table[item['itemId']['itemCode']][0] if item['itemId']['itemCode'] in price_table else -99,
+            available_count=price_table[item['itemId']['itemCode']][1] if item['itemId']['itemCode'] in price_table else -99,
         ) for item in content}
 
 
