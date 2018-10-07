@@ -45,6 +45,11 @@ class App extends React.Component {
                   Transactions
                 </NavItem>
               </LinkContainer>
+              <LinkContainer to="/inventory">
+                <NavItem eventKey={1} href="/inventory">
+                  Inventory
+                </NavItem>
+              </LinkContainer>
             </Nav>
           </Navbar>
           <Grid>
@@ -54,6 +59,7 @@ class App extends React.Component {
               path="/transactions"
               component={ExampleTransactionList}
             />
+            {/* <Route exact path="/inventory" component={InventoryList} /> */}
           </Grid>
         </React.Fragment>
       </Router>
