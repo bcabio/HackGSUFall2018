@@ -30,26 +30,29 @@ const TransactionList: React.SFC<TransactionListProps> = ({ input }) => {
   return (
     <Row>
       <Col>
-        {lodash.values(input).map(transaction => (
-          <Panel>
-            <Panel.Heading>
-              {transaction.customer_name}
-              <Label>{moment(transaction.purchase_time).fromNow()}</Label>
-            </Panel.Heading>
-            <Panel.Body>
-              <Table responsive condensed>
-                <tbody>
-                  {transaction.purchased_items.map(item => (
-                    <tr>
-                      <td>{item.name}</td>
-                      <td>${item.price.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Panel.Body>
-          </Panel>
-        ))}
+        {lodash
+          .sortBy(lodash.values(input), ['purchase_time'])
+          .reverse()
+          .map(transaction => (
+            <Panel>
+              <Panel.Heading>
+                {transaction.customer_name}
+                <Label>{moment(transaction.purchase_time).fromNow()}</Label>
+              </Panel.Heading>
+              <Panel.Body>
+                <Table responsive condensed>
+                  <tbody>
+                    {transaction.purchased_items.map(item => (
+                      <tr>
+                        <td>{item.name}</td>
+                        <td>${item.price.toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Panel.Body>
+            </Panel>
+          ))}
       </Col>
     </Row>
   );

@@ -103,7 +103,7 @@ class Cart extends React.Component<CartProps, CartState> {
       method: 'POST'
     }).then(response => {
       if (response.ok) {
-        this.setState({ currentCart: [] });
+        this.setState({ currentCart: [], shouldThank: true });
       }
     });
   }
@@ -111,7 +111,7 @@ class Cart extends React.Component<CartProps, CartState> {
   private onNfcRead = (messages: NfcScan): void => {
     let newId = messages.records[0].data || 'a';
     newId = newId.replace(/[:./]/g, '');
-    if (newId === 'httpsubmit') {
+    if (newId === 'httppurchase') {
       this.checkout();
     } else {
       this.setState({
