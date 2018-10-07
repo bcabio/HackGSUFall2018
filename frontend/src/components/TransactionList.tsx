@@ -23,6 +23,10 @@ const TransactionList: React.SFC<TransactionListProps> = ({ input }) => {
     return <span>loading...</span>;
   }
 
+  if (lodash.size(input) === 0) {
+    return <span>there's nothing here :(</span>;
+  }
+
   return (
     <Row>
       <Col>
