@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import * as moment from 'moment';
 import { Grid, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -56,6 +55,9 @@ const ExampleInventoryList = () => (
   />
 );
 
+import subscribeRest from './components/subscribeRest';
+import TransactionList from './components/TransactionList';
+
 class App extends React.Component {
   public render() {
     return (
@@ -83,7 +85,7 @@ class App extends React.Component {
             <Route
               exact
               path="/transactions"
-              component={ExampleTransactionList}
+              component={subscribeRest(TransactionList, '/api/transactions')}
             />
             <Route exact path="/inventory" component={ExampleInventoryList} />
           </Grid>
