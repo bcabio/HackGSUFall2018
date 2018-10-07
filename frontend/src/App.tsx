@@ -6,55 +6,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Home from './components/Home';
 import InventoryList from './components/InventoryList';
-import TransactionList from './components/TransactionList';
-
-const ExampleTransactionList = () => (
-  <TransactionList
-    transactions={[
-      {
-        items: [{ name: 'old apple', price: 500 }],
-        time: moment().subtract(7, 'days'),
-        user: 'flaviu'
-      },
-      {
-        items: [{ name: 'old apple', price: 500 }],
-        time: moment().subtract(7, 'days'),
-        user: 'flaviu'
-      },
-      {
-        items: [{ name: 'old apple', price: 500 }],
-        time: moment().subtract(7, 'days'),
-        user: 'flaviu'
-      }
-    ]}
-  />
-);
-
-const ExampleInventoryList = () => (
-  <InventoryList
-    inventory={[
-      {
-        description: 'Best apples',
-        id: 1,
-        name: 'Gala Apples',
-        price: 0.8
-      },
-      {
-        description: 'Okay apples',
-        id: 2,
-        name: 'Red Delicious Apples',
-        price: 0.8
-      },
-      {
-        description: 'Worst apples',
-        id: 3,
-        name: 'Granny Smith Apples',
-        price: 0.8
-      }
-    ]}
-  />
-);
-
 import subscribeRest from './components/subscribeRest';
 import TransactionList from './components/TransactionList';
 
@@ -87,7 +38,11 @@ class App extends React.Component {
               path="/transactions"
               component={subscribeRest(TransactionList, '/api/transactions')}
             />
-            <Route exact path="/inventory" component={ExampleInventoryList} />
+            <Route
+              exact
+              path="/inventory"
+              component={subscribeRest(InventoryList, '/api/catalog')}
+            />
           </Grid>
         </React.Fragment>
       </Router>

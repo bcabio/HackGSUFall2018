@@ -71,6 +71,7 @@ class CatalogEntry:
     description: str
     is_active: bool
     price: float
+    available_count: int
 
 
 @attr.s(frozen=True, auto_attribs=True)
@@ -97,9 +98,9 @@ def get_transaction_list():
         SELECT
             purchased_items.item_id,
             purchased_items.transaction_id,
-            prices.price
-        FROM purchased_items, prices
-        WHERE prices.item_id = purchased_items.item_id;''')
+            aux_data.price
+        FROM purchased_items, aux_data
+        WHERE aux_data.item_id = purchased_items.item_id;''')
     for trans_item in cur.fetchall():
         transactions[trans_item[1]].purchased_items.append(catalog[trans_item[0]])
 
@@ -148,15 +149,16 @@ def get_catalog() -> Dict[str, CatalogEntry]:
     s = request_session()
     content = s.get(GATEWAY_URL + '/catalog/items?pageSize=10000').json()['pageContent']
     db = get_db()
-    price_table = {str(item[0]): item[1]
-                   for item in db.execute('SELECT item_id, price FROM prices;').fetchall()}
+    price_table = {str(item[0]): (item[1], item[2])
+                   for item in db.execute('SELECT item_id, price, available_count FROM aux_data;').fetchall()}
     return {
         item['itemId']['itemCode']: CatalogEntry(
             id=item['itemId']['itemCode'],
             name=item['shortDescription']['value'],
             description=item['longDescription']['value'],
             is_active=item['status'] == 'ACTIVE',
-            price=price_table[item['itemId']['itemCode']]
+            price=price_table[item['itemId']['itemCode']][0],
+            available_count=price_table[item['itemId']['itemCode']][1]
         ) for item in content}
 
 
@@ -186,6 +188,7 @@ def add_item():
     name = data['name']
     price = data['price']
     item_id = data['id']
+    available_count = data['available_count']
     db = get_db()
     res = request_session().put(
         GATEWAY_URL + '/catalog/items', data=json.dumps({"items": [default_item({
@@ -193,8 +196,8 @@ def add_item():
             "shortDescription": {"values": [{"locale": "en-US", "value": name}]},
             "itemId": {"itemCode": item_id},
         })]}))
-    db.execute("""INSERT INTO prices (item_id, price)
-                      VALUES (?, ?)""", (item_id, price))
+    db.execute("""INSERT INTO aux_data (item_id, price, available_count)
+                  VALUES (?, ?, ?)""", (item_id, price, available_count))
     if res.status_code == 200:
         db.commit()
 

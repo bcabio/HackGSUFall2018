@@ -1,8 +1,9 @@
+import * as lodash from 'lodash';
 import * as React from 'react';
-import { Button, Col, Label, Panel, Row } from 'react-bootstrap';
+import { Button, ButtonToolbar, Col, Row, Table } from 'react-bootstrap';
 
 export interface InventoryListProps {
-  inventory: Item[];
+  input: { [id: string]: Item };
 }
 
 export interface Item {
@@ -10,37 +11,58 @@ export interface Item {
   name: string;
   description: string;
   price: number;
+  is_active: boolean;
+  available_count: number;
 }
 
 const InventoryList: React.SFC<InventoryListProps> = props => {
-  // function openAddDialogModel() {
-  // 	render(
-  // 		<Modal.
-  // 	)
-  // }
+  if (props.input == null) {
+    return <span>loading...</span>;
+  }
 
   return (
-    <Row>
-      <Button bsStyle="primary">Add items</Button>
-      <Col>
-        {props.inventory.map(item => (
-          <Panel>
-            <Panel.Heading>
-              {item.name}
-              <Label>(ID: {item.id})</Label>
-            </Panel.Heading>
-            <Panel.Body>
-              <p>
-                <b>Description:</b> {item.description}
-              </p>
-              <p>
-                <b>Price:</b> ${item.price.toFixed(2)}
-              </p>
-            </Panel.Body>
-          </Panel>
-        ))}
-      </Col>
-    </Row>
+    <React.Fragment>
+      <Row>
+        <Col>
+          <ButtonToolbar>
+            <Button bsStyle="primary">Add items</Button>
+          </ButtonToolbar>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Table striped bordered condensed hover>
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Remaining</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {lodash
+                .values(props.input)
+                .filter(item => item.is_active)
+                .map(item => (
+                  <tr>
+                    <td>{item.id}</td>
+                    <td>{item.name}</td>
+                    <td>{item.description}</td>
+                    <td>${item.price.toFixed(2)}</td>
+                    <td>{item.available_count}</td>
+                    <td>
+                      <Button bsStyle="primary">Remove</Button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
+    </React.Fragment>
   );
 };
 

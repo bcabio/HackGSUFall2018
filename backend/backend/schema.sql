@@ -12,10 +12,11 @@ CREATE TABLE purchased_items (
   FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id)
 );
 
-DROP TABLE IF EXISTS prices;
-CREATE TABLE prices (
+DROP TABLE IF EXISTS aux_data;
+CREATE TABLE aux_data (
   item_id TEXT UNIQUE PRIMARY KEY NOT NULL,
-  price REAL NOT NULL
+  price REAL NOT NULL,
+  available_count INTEGER NOT NULL
 );
-INSERT INTO prices (item_id, price) VALUES (123, 24);
-INSERT INTO prices (item_id, price) VALUES (12345678, 532);
+INSERT INTO aux_data (item_id, price, available_count) VALUES (123, 24, 20);
+INSERT INTO aux_data (item_id, price, available_count) VALUES (12345678, 532, 20);
