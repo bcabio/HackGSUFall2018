@@ -1,18 +1,10 @@
 import * as lodash from 'lodash';
 import * as React from 'react';
 import { Button, ButtonToolbar, Col, Row, Table } from 'react-bootstrap';
+import { ItemCatalog } from './models';
 
 export interface InventoryListProps {
-  input: { [id: string]: Item };
-}
-
-export interface Item {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  is_active: boolean;
-  available_count: number;
+  input: ItemCatalog;
 }
 
 const InventoryList: React.SFC<InventoryListProps> = props => {

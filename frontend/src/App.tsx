@@ -4,6 +4,7 @@ import { Grid, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
+import Cart from './components/Cart';
 import Home from './components/Home';
 import InventoryList from './components/InventoryList';
 import subscribeRest from './components/subscribeRest';
@@ -29,6 +30,11 @@ class App extends React.Component {
                   Inventory
                 </NavItem>
               </LinkContainer>
+              <LinkContainer to="/cart">
+                <NavItem eventKey={1} href="/cart">
+                  Cart
+                </NavItem>
+              </LinkContainer>
             </Nav>
           </Navbar>
           <Grid>
@@ -43,6 +49,7 @@ class App extends React.Component {
               path="/inventory"
               component={subscribeRest(InventoryList, '/api/catalog')}
             />
+            <Route exact path="/cart" component={Cart} />
           </Grid>
         </React.Fragment>
       </Router>
