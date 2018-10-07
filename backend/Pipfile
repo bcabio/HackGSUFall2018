@@ -8,6 +8,7 @@ flask = "*"
 attrs = "*"
 python-dateutil = "*"
 pytz = "*"
+requests = "*"
 
 [dev-packages]
 

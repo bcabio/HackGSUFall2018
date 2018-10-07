@@ -1,12 +1,15 @@
-from datetime import datetime
-import os
-from typing import List, Dict
+import time
 
 import attr
-import pytz
-from flask import Flask, request, g, jsonify
 import dateutil.parser
+import json
+import os
+import pytz
+import requests
 import sqlite3
+from datetime import datetime
+from flask import Flask, request, g, jsonify
+from typing import List, Dict
 
 from backend.json_encoding import MyJSONEncoder
 
@@ -62,9 +65,11 @@ def initdb_command():
 
 
 @attr.s(frozen=True, auto_attribs=True)
-class PurchasedItem:
-    id: int
+class CatalogEntry:
+    id: str
     name: str
+    description: str
+    is_active: bool
     price: float
 
 
@@ -73,10 +78,10 @@ class Transaction:
     id: int
     customer_name: str
     purchase_time: datetime
-    purchased_items: List[PurchasedItem] = attr.Factory(list)
+    purchased_items: List[CatalogEntry] = attr.Factory(list)
 
 
-@app.route('/transactions')
+@app.route('/transactions', methods=['GET'])
 def get_transaction_list():
     db = get_db()
     cur = db.execute('SELECT * FROM transactions;')
@@ -87,14 +92,16 @@ def get_transaction_list():
             customer_name=transaction[1],
             purchase_time=dateutil.parser.parse(transaction[2]))
 
-    cur = db.execute('SELECT * FROM purchased_items;')
+    catalog = get_catalog()
+    cur = db.execute('''
+        SELECT
+            purchased_items.item_id,
+            purchased_items.transaction_id,
+            prices.price
+        FROM purchased_items, prices
+        WHERE prices.item_id = purchased_items.item_id;''')
     for trans_item in cur.fetchall():
-        transactions[trans_item[1]].purchased_items.append(
-            PurchasedItem(
-                id=trans_item[0],
-                price=trans_item[2],
-                name=trans_item[3]
-            ))
+        transactions[trans_item[1]].purchased_items.append(catalog[trans_item[0]])
 
     transactions: List[Transaction] = sorted(transactions.values(),
                                              key=lambda trans: trans.purchase_time)
@@ -110,10 +117,100 @@ def add_transaction():
                         VALUES (?, ?)""", (
         data['customer_name'], pytz.utc.localize(datetime.utcnow()).isoformat()))
     transaction_id = cur.lastrowid
-    purchased_items = [(transaction_id, val['name'], val['price'])
-                       for val in data['purchased_items']]
-    db.executemany("""INSERT INTO purchased_items (transaction_id, name, price)
-                      VALUES (?, ?, ?)""", purchased_items)
+    purchased_items = [(transaction_id, item_id)
+                       for item_id in data['purchased_items']]
+    catalog = get_catalog()
+    for transaction_id, item_id in purchased_items:
+        assert item_id in catalog
+    db.executemany("""INSERT INTO purchased_items (transaction_id, item_id)
+                      VALUES (?, ?)""", purchased_items)
     db.commit()
 
     return jsonify({'id': transaction_id})
+
+
+GATEWAY_URL = 'https://gateway-staging.ncrcloud.com'
+
+
+def request_session():
+    session = requests.Session()
+    session.auth = ('acct:hackgsu0@hackgsu0serviceuser', '8a0084a165d712fd0166471590190044')
+    session.headers.update({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'nep-application-key': '8a0084a165d712fd0166471590190044',
+    })
+    return session
+
+
+def get_catalog() -> Dict[str, CatalogEntry]:
+    s = request_session()
+    content = s.get(GATEWAY_URL + '/catalog/items?pageSize=10000').json()['pageContent']
+    db = get_db()
+    price_table = {str(item[0]): item[1]
+                   for item in db.execute('SELECT item_id, price FROM prices;').fetchall()}
+    return {
+        item['itemId']['itemCode']: CatalogEntry(
+            id=item['itemId']['itemCode'],
+            name=item['shortDescription']['value'],
+            description=item['longDescription']['value'],
+            is_active=item['status'] == 'ACTIVE',
+            price=price_table[item['itemId']['itemCode']]
+        ) for item in content}
+
+
+@app.route('/catalog', methods=['GET'])
+def get_catalog_req():
+    return jsonify(get_catalog())
+
+
+def default_item(other_values):
+    result = {
+        'alternateCategories': [],
+        'status': 'ACTIVE',
+        'nonMerchandise': False,
+        'version': time.time(),
+        'merchandiseCategory': 'a',
+        'departmentId': 'a',
+    }
+    result.update(other_values)
+    return result
+
+
+@app.route('/catalog', methods=['PUT'])
+def add_item():
+    """Takes a JSON {name: string, price: float, id: string, description: string}"""
+    data = request.json
+    description = data['description']
+    name = data['name']
+    price = data['price']
+    item_id = data['id']
+    db = get_db()
+    res = request_session().put(
+        GATEWAY_URL + '/catalog/items', data=json.dumps({"items": [default_item({
+            "longDescription": {"values": [{"locale": "en-US", "value": description}]},
+            "shortDescription": {"values": [{"locale": "en-US", "value": name}]},
+            "itemId": {"itemCode": item_id},
+        })]}))
+    db.execute("""INSERT INTO prices (item_id, price)
+                      VALUES (?, ?)""", (item_id, price))
+    if res.status_code == 200:
+        db.commit()
+
+    return res.text, res.status_code, {'Content-Type': 'application/json'}
+
+
+@app.route('/catalog/<item_id>', methods=['DELETE'])
+def delete_item(item_id):
+    """Takes a string id in the URL"""
+    item_url = '{}/catalog/items/{}'.format(GATEWAY_URL, item_id)
+    item_value = request_session().get(item_url).json()
+    item_value.update({
+        'status': 'INACTIVE',
+        'version': time.time(),
+    })
+    for unneeded_field in ['itemId', 'auditTrail']:
+        del item_value[unneeded_field]
+    res = request_session().put(item_url, data=json.dumps(item_value))
+    return res.text, res.status_code, {'Content-Type': 'application/json'}
