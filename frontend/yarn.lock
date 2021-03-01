@@ -5784,6 +5784,11 @@ next-tick@1:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
+nfc-react-web@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/nfc-react-web/-/nfc-react-web-0.0.2.tgz#7749fd653f279a324744c8a34bee59d754ed0414"
+  integrity sha512-5a1p9hj0g4xqrY2icABlYRzjC093+uaOrGI8pd34nllXg8qqS2dem72XBCgaYg72E4hEXxg5WvKCPU3p8m/eSA==
+
 no-case@^2.2.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-2.3.2.tgz#60b813396be39b3f1288a4c1ed5d1e7d28b464ac"
@@ -8751,9 +8756,9 @@ uri-js@^4.2.2:
     punycode "^2.1.0"
 
 urijs@^1.16.1:
-  version "1.19.1"
-  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.1.tgz#5b0ff530c0cbde8386f6342235ba5ca6e995d25a"
-  integrity sha512-xVrGVi94ueCJNrBSTjWqjvtgvl3cyOTThp2zaMaFNGp3F542TR6sM3f2o8RqZl+AwteClSVmoCyt0ka4RjQOQg==
+  version "1.19.6"
+  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.6.tgz#51f8cb17ca16faefb20b9a31ac60f84aa2b7c870"
+  integrity sha512-eSXsXZ2jLvGWeLYlQA3Gh36BcjF+0amo92+wHPyN1mdR8Nxf75fuEuYTd9c0a+m/vhCjRK0ESlE9YNLW+E1VEw==
 
 urix@^0.1.0:
   version "0.1.0"
