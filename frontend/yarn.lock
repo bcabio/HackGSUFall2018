@@ -5521,9 +5521,9 @@ merge-descriptors@1.0.1:
   integrity sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E=
 
 merge@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.0.tgz#7531e39d4949c281a66b8c5a6e0265e8b05894da"
-  integrity sha1-dTHjnUlJwoGma4xabgJl6LBYlNo=
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.1.tgz#38bebf80c3220a8a487b6fcfb3941bb11720c145"
+  integrity sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==
 
 methods@~1.1.2:
   version "1.1.2"
@@ -5783,6 +5783,11 @@ next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
+
+nfc-react-web@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/nfc-react-web/-/nfc-react-web-0.0.2.tgz#7749fd653f279a324744c8a34bee59d754ed0414"
+  integrity sha512-5a1p9hj0g4xqrY2icABlYRzjC093+uaOrGI8pd34nllXg8qqS2dem72XBCgaYg72E4hEXxg5WvKCPU3p8m/eSA==
 
 no-case@^2.2.0:
   version "2.3.2"
